@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<!-- / => 首页
+     /module1 => 模块1
+ -->
+
+<body ng-app="rootApp">
+<!-- ng-view:是一个占位符，最终替换为路由执行过后的结果 -->
+<ul>
+	<li><a href="#/">主页</a></li>
+	<li><a href="#/module1">模块一</a></li>
+	<li><a href="#/module2">模块二</a></li>
+</ul>
+<div ng-view></div>
+<script src="../../../node_modules/angular/angular.js"></script>
+<!-- 在NG官方提供的路由，是一个单独的JS文件 -->
+<script src="../../../node_modules/angular-route/angular-route.js"></script>
+<script id="tmpl" type="text/ng-template">
+	<h1>{{hello}}</h1>
+</script>
+<script>
+	// 1. 引入NG和ngRoute的包
+	// 2. 定义一个模块(注意如果使用路由就必须引入ngRoute模块)
+	var rootApp = angular.module('rootApp', ['ngRoute']);
+	// 3. 定义路由表（路由规则）
+	rootApp.config(['$routeProvider', function($routeProvider) {
+		// $routeProvider 就相当于保安部
+		$routeProvider
+				.when('/', {
+					// 当请求的“URL” /， 找当前定义控制器和视图
+					controller: 'DefaultController',
+					// template: '<h1>{{hello}}</h1>'
+					templateUrl: 'tmpl'
+				})
+				.when('/module1/1', {
+					controller: 'Module1Controller',
+					// template: '<h1>{{hello}}</h1>'
+					templateUrl: 'tmpl'
+				})
+				.when('/module2/:id/:name/:age', {
+					controller: 'Module2Controller',
+					// template: '<h1>{{hello}}</h1>'
+					templateUrl: 'tmpl'
+				})
+				.otherwise({
+					// controller: 'Module2Controller',
+					// // template: '<h1>{{hello}}</h1>'
+					// templateUrl: 'tmpl'
+					redirectTo: '/'
+				});
+	}]);
+
+	// 定义一些控制器
+	rootApp.controller('DefaultController', ['$scope', function($scope) {
+		$scope.hello = '恭喜你被Alibaba';
+	}]);
+	rootApp.controller('Module1Controller', ['$scope', function($scope) {
+		$scope.hello = 'Module1Controller';
+	}]);
+	rootApp.controller('Module2Controller', ['$scope', '$routeParams', function($scope, $routeParams) {
+		console.log($routeParams);
+		$scope.hello = 'Module2Controller';
+	}]);
+</script>
+</body>
+
+</html>
+
